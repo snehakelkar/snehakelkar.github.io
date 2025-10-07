@@ -1,0 +1,234 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f1f3f4 100%);
+    color: #2c3e50;
+    line-height: 1.7;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.back-link {
+    display: inline-block;
+    color: #87CEEB;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+    font-size: 16px;
+}
+
+.back-link:hover {
+    color: #2F4F4F;
+}
+
+.page-title {
+    font-family: 'Fredoka', cursive;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 2px;
+}
+
+/* Main content */
+.main-content {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 40px;
+}
+
+.profile-image-container {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.profile-image-container:hover {
+    transform: scale(1.05);
+}
+
+.profile-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: top;
+}
+
+.content {
+    max-width: 600px;
+}
+
+.name {
+    font-family: 'Fredoka', cursive;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    color: #000000;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.bio {
+    margin-bottom: 40px;
+}
+
+.bio p {
+    font-size: 1rem;
+    color: #000000;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.interests {
+    margin-bottom: 40px;
+}
+
+.interests h3 {
+    font-family: 'Fredoka', cursive;
+    font-size: 1.3rem;
+    color: #000000;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.interest-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.tag {
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6);
+    color: #2F4F4F;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
+}
+
+.contact h3 {
+    font-family: 'Fredoka', cursive;
+    font-size: 1.3rem;
+    color: #000000;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.contact-links {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.contact-link {
+    color: #87CEEB;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 12px 24px;
+    border: 2px solid #87CEEB;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.contact-link:hover {
+    background: #87CEEB;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .main-content {
+        padding: 30px 25px;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .name {
+        font-size: 1.8rem;
+    }
+    
+    .profile-image-container {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .contact-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .contact-link {
+        width: 200px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .name {
+        font-size: 1.6rem;
+    }
+    
+    .main-content {
+        padding: 25px 20px;
+    }
+}
