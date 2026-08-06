@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Count of Monte Cristo — Interactive Map</title>
+
+<!-- Leaflet (vendored locally) -->
+<link rel="stylesheet" href="lib/leaflet.css"/>
+<script src="lib/leaflet.js"></script>
+<link rel="stylesheet" href="lib/leaflet-geoman.css"/>
+<script src="lib/leaflet-geoman.min.js"></script>
+<script src="lib/leaflet.polylineDecorator.js"></script>
+
+<!-- Smithsonian-style typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --dark:#1f2124; --dark2:#2a2d31; --teal:#2ba3c4; --orange:#e8820c;
+    --gold:#f0a500; --purple:#7b6fd0; --ink:#22252a; --muted:#8a9095;
+    --line:#e6e6e6; --panelw:360px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{font-family:'Archivo',system-ui,Helvetica,Arial,sans-serif;color:var(--ink);overflow:hidden;background:var(--dark)}
+  .serif{font-family:'Libre Caslon Text',Georgia,'Times New Roman',serif}
+
+  /* ---------- top bar ---------- */
+  #topbar{height:60px;background:var(--dark);border-bottom:3px solid var(--orange);
+    display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:#fff;position:relative;z-index:1500}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .brand .star{flex:0 0 auto}
+  .brand h1{font-family:'Libre Caslon Text',serif;font-weight:400;font-size:1.28rem;margin:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand .yr{color:#9aa0a6;font-style:italic;font-size:.82rem;margin-left:2px}
+  .topnav{display:flex;align-items:center;gap:22px;flex:0 0 auto}
+  .topnav a{color:#fff;text-transform:uppercase;font-size:.76rem;letter-spacing:.14em;text-decoration:none;font-weight:500}
+  .topnav a:hover{color:var(--orange)}
+  .topnav .book{color:var(--gold);font-style:normal}
+  @media(max-width:640px){.brand .yr,.topnav a.hideonsm{display:none}.brand h1{font-size:1.05rem}}
+
+  #app{display:flex;height:calc(100vh - 60px);position:relative}
+
+  /* ---------- sidebar (white) ---------- */
+  #side{width:var(--panelw);flex:0 0 var(--panelw);height:100%;overflow-y:auto;background:#fff;
+    border-right:1px solid var(--line);transition:margin-left .25s ease;z-index:1000}
+  #side.collapsed{margin-left:calc(-1 * var(--panelw))}
+  #side .pad{padding:16px 20px 40px}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--teal);text-transform:uppercase;
+    letter-spacing:.14em;font-weight:600;font-size:.76rem;text-decoration:none}
+  .back:hover{color:var(--orange)}
+  .lead{font-family:'Libre Caslon Text',serif;font-size:1.02rem;color:#3a3f45;line-height:1.4;margin:14px 0 6px}
+  .leadsub{font-size:.82rem;color:var(--muted);line-height:1.45;margin:0 0 4px}
+
+  section{padding:16px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+  section > h2{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#1f2124;font-weight:700;margin:0 0 12px}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:'Archivo',sans-serif;
+    font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid var(--teal);border-radius:3px;
+    background:#fff;color:var(--teal);padding:9px 10px;width:100%;letter-spacing:.02em;transition:.12s}
+  .btn:hover{background:#f0fafc}
+  .btn.p{background:var(--teal);color:#fff}
+  .btn.p:hover{background:#2491b0}
+  .btn.o{border-color:var(--orange);color:var(--orange)}
+  .btn.o:hover{background:#fff6ec}
+  .btn.on{background:var(--orange);color:#fff;border-color:var(--orange)}
+  .btn.ghost{border-color:#cfd4d8;color:#5a6068}
+  .btn.small{font-size:.76rem;padding:7px 8px}
+  .btn.danger{border-color:#c0392b;color:#c0392b}
+  .btn.danger:hover{background:#fdeceb}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .hint{font-size:.75rem;color:var(--muted);line-height:1.45;margin:8px 0 0}
+  label.chk{display:flex;align-items:center;gap:9px;font-size:.86rem;margin:8px 0;cursor:pointer;color:#3a3f45}
+  label.chk input{width:16px;height:16px;accent-color:var(--teal)}
+  select,input[type=text],textarea{width:100%;font-family:'Archivo',sans-serif;font-size:.85rem;padding:8px;
+    border:1px solid #d4d9dd;border-radius:3px;background:#fff;color:var(--ink)}
+  select:focus,input:focus,textarea:focus{outline:2px solid var(--teal);outline-offset:-1px;border-color:var(--teal)}
+
+  /* annotations list (Smithsonian project-list style) */
+  #tl{list-style:none;padding:0;margin:0}
+  #tl li{padding:13px 0;border-top:1px solid #ededed;cursor:pointer;position:relative}
+  #tl li:first-child{border-top:none}
+  #tl .kind{display:flex;align-items:center;gap:7px;font-size:.66rem;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--teal);font-weight:600}
+  #tl .kind .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  #tl .kind .dot.line{border-radius:0;width:14px;height:0;border-top:3px dotted currentColor}
+  #tl .ttl{font-family:'Libre Caslon Text',serif;font-size:1.06rem;line-height:1.2;color:#1f2124;margin:4px 0 0}
+  #tl .num{color:var(--muted);font-style:italic;font-family:'Libre Caslon Text',serif}
+  #tl .dt{font-size:.76rem;color:var(--muted);margin-top:3px}
+  #tl .mini{position:absolute;top:11px;right:0;display:none;gap:8px}
+  #tl li:hover .mini{display:flex}
+  #tl .mini button{border:none;background:none;cursor:pointer;font-size:.9rem;color:var(--muted)}
+  #tl .mini button:hover{color:var(--orange)}
+  .empty{font-size:.82rem;color:var(--muted);font-style:italic;font-family:'Libre Caslon Text',serif}
+
+  .credit{font-size:.68rem;color:#a7adb2;line-height:1.5;margin-top:6px}
+
+  /* hide/show toggle */
+  .hidebar{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  #showTab{position:absolute;top:14px;left:14px;z-index:1100;display:none;background:#fff;border:1px solid var(--line);
+    color:var(--teal);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;
+    padding:9px 12px;border-radius:3px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+
+  /* map */
+  #mapwrap{flex:1;position:relative;background:#2a2d31}
+  #map{position:absolute;inset:0}
+  #yearbadge{position:absolute;top:14px;right:14px;z-index:600;background:var(--dark);color:#fff;
+    font-family:'Libre Caslon Text',serif;letter-spacing:.14em;padding:6px 16px;border-radius:2px;font-size:1rem;
+    border:1px solid #3a3f45}
+  #drawtip{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:600;display:none;
+    background:var(--teal);color:#fff;padding:8px 15px;border-radius:2px;font-size:.82rem;letter-spacing:.02em;
+    box-shadow:0 2px 10px rgba(0,0,0,.35)}
+
+  /* markers */
+  .cmark{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-family:'Archivo',sans-serif;font-weight:600;font-size:13px;border:2px solid #fff;
+    box-shadow:0 1px 5px rgba(0,0,0,.55);transform:translate(-50%,-50%)}
+  .starmark{transform:translate(-50%,-50%)}
+  .starmark svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.7))}
+  .leaflet-tooltip.lbl-perm{background:transparent;border:none;box-shadow:none;color:#c7ccd0;
+    font-family:'Libre Caslon Text',serif;font-style:italic;font-size:12px;text-shadow:0 1px 3px #000;padding:0}
+  .leaflet-tooltip.lbl-perm:before{display:none}
+  .leaflet-tooltip.lbl-hover{background:var(--dark);border:none;color:#fff;font-family:'Archivo',sans-serif;
+    font-size:12px;box-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .leaflet-tooltip.lbl-hover:before{border-top-color:var(--dark)}
+
+  /* popup */
+  .leaflet-popup-content-wrapper{border-radius:3px}
+  .pu{font-family:'Archivo',sans-serif;font-size:.85rem;min-width:170px}
+  .pu .k{font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);font-weight:600}
+  .pu b{font-family:'Libre Caslon Text',serif;font-size:1.15rem;font-weight:400;display:block;margin:2px 0 4px;color:#1f2124}
+  .pu .pd{color:var(--muted);margin-bottom:4px}
+  .pu .pn{margin:4px 0;color:#3a3f45;line-height:1.4}
+  .pu .pb{display:flex;gap:14px;margin-top:8px}
+  .pu .pb button{cursor:pointer;border:none;background:none;color:var(--teal);font-weight:600;
+    text-transform:uppercase;letter-spacing:.1em;font-size:.72rem;padding:0}
+  .pu .pb button:hover{color:var(--orange)}
+  .pu .pb button.del:hover{color:#c0392b}
+
+  /* modal */
+  #modal{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;background:rgba(20,22,25,.55)}
+  #modal .box{width:min(430px,92vw);background:#fff;border-radius:4px;padding:20px 22px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  #modal h3{font-family:'Libre Caslon Text',serif;font-weight:400;margin:0 0 14px;font-size:1.4rem;color:#1f2124}
+  #modal .fld{margin-bottom:11px}
+  #modal .fld label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;font-weight:600}
+  .swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .swatches .sw{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #ccc}
+  .swatches .sw.sel{box-shadow:0 0 0 2px var(--ink)}
+  #modal .actions{display:flex;gap:10px;margin-top:16px;align-items:center}
+  #modal .actions .btn{width:auto;flex:1}
+  #modal .actions .spacer{flex:1}
+
+  @media(max-width:720px){
+    #app{flex-direction:column}
+    #side{width:100%;flex:none;height:auto;max-height:44vh;border-right:none;border-bottom:1px solid var(--line)}
+    #side.collapsed{margin-left:0;display:none}
+    #mapwrap{flex:1;min-height:56vh}
+  }
+</style>
+</head>
+<body>
+  <!-- ============ TOP BAR ============ -->
+  <div id="topbar">
+    <div class="brand">
+      <svg class="star" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <g fill="#fff"><circle cx="12" cy="12" r="3.2"/>
+        <g stroke="#fff" stroke-width="1.6">
+        <line x1="12" y1="1" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="23"/>
+        <line x1="1" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="23" y2="12"/>
+        <line x1="4" y1="4" x2="7.5" y2="7.5"/><line x1="16.5" y1="16.5" x2="20" y2="20"/>
+        <line x1="20" y1="4" x2="16.5" y2="7.5"/><line x1="7.5" y1="16.5" x2="4" y2="20"/></g></g>
+      </svg>
+      <h1 class="serif">The Count of Monte Cristo <span class="yr">· Dumas, 1844</span></h1>
+    </div>
+    <nav class="topnav">
+      <a href="fictionalmapsoverview.html" class="hideonsm">Fictional Maps</a>
+      <a href="../../index.html">Home</a>
+      <a class="book" href="#" id="yearNav">1815</a>
+    </nav>
+  </div>
+
+<div id="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside id="side"><div class="pad">
+    <a class="back" href="../../index.html">‹ Back to nuff said</a>
+    <p class="lead">An 1815 map of the Mediterranean.</p>
+    <p class="leadsub">Add your own places and dotted journeys — each with dates and notes. Everything auto-saves in your browser.</p>
+
+    <section>
+      <h2>Annotate</h2>
+      <div class="row">
+        <button class="btn p" id="addPlace">＋ Place</button>
+        <button class="btn p" id="addTrip">➜ Trip</button>
+      </div>
+      <div class="row">
+        <button class="btn" id="editMode">Move / edit</button>
+        <button class="btn ghost" id="stopDraw">Stop</button>
+      </div>
+      <p class="hint"><b>Place</b>: click the map to drop a marker. <b>Trip</b>: click along a route, double-click to finish a dotted line. A panel opens for the name &amp; dates.</p>
+    </section>
+
+    <section>
+      <h2>Basemap</h2>
+      <select id="baselayer">
+        <option value="dark">Dark canvas</option>
+        <option value="relief">Shaded relief</option>
+        <option value="satellite">Satellite</option>
+        <option value="street">Street</option>
+      </select>
+      <label class="chk" style="margin-top:10px"><input type="checkbox" id="tglBorders" checked> 1815 country borders</label>
+      <label class="chk"><input type="checkbox" id="tglLabels"> Country name labels</label>
+      <div class="row" style="margin-top:10px">
+        <button class="btn small" id="zoomMed">Whole sea</button>
+        <button class="btn small" id="zoomBay">Marseille bay</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Your annotations</h2>
+      <ul id="tl"></ul>
+      <p class="empty" id="tlEmpty">Nothing yet — add a place or trip above.</p>
+    </section>
+
+    <section>
+      <h2>Save &amp; share</h2>
+      <div class="row">
+        <button class="btn small o" id="expBtn">Export</button>
+        <button class="btn small" id="impBtn">Import</button>
+      </div>
+      <div class="row">
+        <button class="btn small" id="demoBtn">Load demo</button>
+        <button class="btn small danger" id="clearBtn">Clear all</button>
+      </div>
+      <input type="file" id="impFile" accept=".json,.geojson" style="display:none">
+      <p class="hint">Auto-saves in this browser. <b>Export</b> to keep or share a file; commit it beside this page as <code>montecristo-annotations.json</code> to make it the default for everyone.</p>
+    </section>
+
+    <div class="hidebar"><a class="back" href="#" id="hideBtn">‹ Hide panel</a></div>
+    <p class="credit">1815 borders: historical-basemaps (A. Ourednik, CC-BY-SA). Basemaps © Esri / OpenStreetMap contributors.</p>
+  </div></aside>
+
+  <!-- ============ MAP ============ -->
+  <div id="mapwrap">
+    <div id="map"></div>
+    <button id="showTab">≡ Places</button>
+    <div id="yearbadge">1815</div>
+    <div id="drawtip"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div id="modal"><div class="box">
+  <h3 id="mTitle" class="serif">Add place</h3>
+  <div class="fld"><label>Name / title</label><input type="text" id="fTitle" placeholder="e.g. Château d'If"></div>
+  <div class="fld" id="fDateWrap"><label id="fDateLbl">Date</label><input type="text" id="fDate" placeholder="e.g. 28 Feb 1815"></div>
+  <div class="fld" id="fDateEndWrap" style="display:none"><label>End date (optional)</label><input type="text" id="fDateEnd" placeholder="e.g. 1829"></div>
+  <div class="fld"><label>Notes (optional)</label><textarea id="fNotes" rows="3" placeholder="What happens here…"></textarea></div>
+  <div class="fld"><label>Colour</label><div class="swatches" id="swatches"></div></div>
+  <label class="chk" id="starWrap"><input type="checkbox" id="fStar"> Mark as a special place (★)</label>
+  <div class="actions">
+    <button class="btn danger" id="mDelete" style="display:none;flex:0 0 auto">Delete</button>
+    <span class="spacer"></span>
+    <button class="btn" id="mCancel" style="flex:0 0 auto">Cancel</button>
+    <button class="btn p" id="mSave" style="flex:0 0 auto">Save</button>
+  </div>
+</div></div>
+
+<script>
+/* ===================== data / config ===================== */
+const COLORS=['#2ba3c4','#f0a500','#7b6fd0','#e8820c','#c0392b','#2b9d4a','#ffffff'];
+const STORE_KEY='mc_annotations_v2';
+
+/* ---- map ---- */
+const map=L.map('map',{minZoom:3,maxZoom:18,zoomControl:true,worldCopyJump:true}).setView([42.6,8.8],6);
+function esri(name,max){return L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/'+name+'/MapServer/tile/{z}/{y}/{x}',
+  {maxZoom:18,maxNativeZoom:max,attribution:'Tiles © Esri'});}
+const bases={
+  dark:      esri('Canvas/World_Dark_Gray_Base',16),
+  relief:    esri('World_Shaded_Relief',13),
+  satellite: esri('World_Imagery',19),
+  street:    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'})
+};
+let curBase=bases.dark.addTo(map);
+document.getElementById('baselayer').addEventListener('change',e=>{
+  map.removeLayer(curBase); curBase=bases[e.target.value].addTo(map); curBase.bringToBack();
+});
+
+/* ---- 1815 borders ---- */
+let bordersLayer=null,labelsOn=false;
+const BORDER_URLS=[
+  'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1815.geojson',
+  'https://raw.githubusercontent.com/aourednik/historical-basemaps/master/geojson/world_1815.geojson',
+  'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1800.geojson'
+];
+const nameOf=p=>p&&(p.NAME||p.name||p.SUBJECTO||p.PARTOF||p.PART_OF||'')||'';
+async function loadBorders(){
+  for(const url of BORDER_URLS){
+    try{
+      const r=await fetch(url); if(!r.ok) continue;
+      const gj=await r.json();
+      bordersLayer=L.geoJSON(gj,{
+        style:{color:'#8a9298',weight:1,opacity:.7,fillColor:'#aeb6bd',fillOpacity:.04},
+        onEachFeature:(f,layer)=>{const nm=nameOf(f.properties); if(nm){layer._nm=nm;layer.bindTooltip(nm,{sticky:true,className:'lbl-hover'});}
+          layer.on('mouseover',()=>layer.setStyle({color:'#2ba3c4',weight:2,fillOpacity:.12}));
+          layer.on('mouseout',()=>layer.setStyle({color:'#8a9298',weight:1,fillOpacity:.04}));}
+      });
+      if(document.getElementById('tglBorders').checked) bordersLayer.addTo(map);
+      bordersLayer.bringToBack(); curBase.bringToBack(); applyLabels(); return;
+    }catch(e){}
+  }
+  document.getElementById('yearbadge').textContent='1815 · borders offline';
+}
+function applyLabels(){ if(!bordersLayer)return;
+  bordersLayer.eachLayer(l=>{ if(!l._nm)return; l.unbindTooltip();
+    if(labelsOn) l.bindTooltip(l._nm,{permanent:true,direction:'center',className:'lbl-perm'}).openTooltip();
+    else l.bindTooltip(l._nm,{sticky:true,className:'lbl-hover'}); });
+}
+document.getElementById('tglBorders').addEventListener('change',e=>{ if(!bordersLayer)return;
+  if(e.target.checked){bordersLayer.addTo(map);bordersLayer.bringToBack();curBase.bringToBack();} else map.removeLayer(bordersLayer);});
+document.getElementById('tglLabels').addEventListener('change',e=>{labelsOn=e.target.checked;applyLabels();});
+loadBorders();
+
+/* ===================== annotations ===================== */
+let anns=[]; const layerById={}; const group=L.featureGroup().addTo(map);
+let uid=Date.now(); const nid=()=>'a'+(uid++).toString(36);
+const escapeHtml=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function circleIcon(color,num){
+  const dark=(color.toLowerCase()==='#ffffff');
+  return L.divIcon({className:'',html:'<div class="cmark" style="background:'+color+';'+(dark?'color:#1f2124;':'')+'">'+(num||'')+'</div>',
+    iconSize:[30,30],iconAnchor:[15,15],popupAnchor:[0,-16]});
+}
+function starIcon(color){
+  const c=color||'#ffffff';
+  const svg='<svg width="34" height="34" viewBox="0 0 34 34"><path d="M17 2l4.2 9.3 10.1 1-7.6 6.8 2.2 10-8.9-5.3-8.9 5.3 2.2-10L1.7 12.3l10.1-1z" fill="'+c+'" stroke="#1f2124" stroke-width="1.3"/></svg>';
+  return L.divIcon({className:'starmark',html:svg,iconSize:[34,34],iconAnchor:[17,17],popupAnchor:[0,-16]});
+}
+function popupHtml(a){
+  const kind=a.kind==='trip'?'Journey':(a.starred?'Landmark':'Place');
+  const dt=a.kind==='trip'?[a.date,a.dateEnd].filter(Boolean).join(' – '):(a.date||'');
+  return '<div class="pu"><div class="k" style="color:'+(a.color==='#ffffff'?'#8a9095':a.color)+'">'+kind+'</div>'
+    +'<b>'+(escapeHtml(a.title)||'(untitled)')+'</b>'
+    +(dt?'<div class="pd">'+escapeHtml(dt)+'</div>':'')
+    +(a.notes?'<div class="pn">'+escapeHtml(a.notes)+'</div>':'')
+    +'<div class="pb"><button onclick="editAnn(\''+a.id+'\')">Edit</button>'
+    +'<button class="del" onclick="removeAnn(\''+a.id+'\')">Delete</button></div></div>';
+}
+function buildLayer(a){
+  let layer;
+  if(a.kind==='place'){
+    layer=a.starred?L.marker(a.coords,{icon:starIcon(a.color)}):L.marker(a.coords,{icon:circleIcon(a.color,a._num)});
+  }else{
+    layer=L.polyline(a.coords,{color:a.color==='#ffffff'?'#cfd4d8':a.color,weight:3.5,opacity:.95,dashArray:'1 9',lineCap:'round'});
+    layer._decor=L.polylineDecorator(layer,{patterns:[{offset:'8%',repeat:'130px',
+      symbol:L.Symbol.arrowHead({pixelSize:11,pathOptions:{color:a.color==='#ffffff'?'#cfd4d8':a.color,fillOpacity:1,weight:0}})}]});
+  }
+  layer._annId=a.id; layer.bindPopup(()=>popupHtml(a),{minWidth:170});
+  layer.on('pm:edit',()=>syncGeom(a.id)); layer.on('pm:dragend',()=>syncGeom(a.id)); layer.on('pm:markerdragend',()=>syncGeom(a.id));
+  return layer;
+}
+function syncGeom(id){const a=anns.find(x=>x.id===id),l=layerById[id]; if(!a||!l)return;
+  if(a.kind==='place'){const ll=l.getLatLng();a.coords=[ll.lat,ll.lng];}
+  else{a.coords=l.getLatLngs().map(p=>[p.lat,p.lng]); if(l._decor)l._decor.setPaths(l.getLatLngs());}
+  save();}
+function removeLayerOnly(id){const l=layerById[id]; if(l){if(l._decor)map.removeLayer(l._decor);group.removeLayer(l);} delete layerById[id];}
+function removeAnn(id){removeLayerOnly(id);anns=anns.filter(a=>a.id!==id);map.closePopup();renderAll();save();}
+window.removeAnn=removeAnn;
+window.editAnn=id=>{const a=anns.find(x=>x.id===id); if(a){map.closePopup();openModal(a,false);}};
+
+const yearOf=a=>{const m=((a.date||'')+' '+(a.dateEnd||'')).match(/\d{3,4}/);return m?+m[0]:99999;};
+function renderAll(){
+  Object.keys(layerById).forEach(removeLayerOnly);
+  const sorted=anns.slice().sort((x,y)=>yearOf(x)-yearOf(y));
+  let n=0; sorted.forEach(a=>{ if(a.kind==='place'&&!a.starred){n++;a._num=n;} });
+  sorted.forEach(a=>{const l=buildLayer(a);layerById[a.id]=l;l.addTo(group);if(l._decor)l._decor.addTo(map);});
+  renderTL(sorted);
+}
+function renderTL(sorted){
+  const ul=document.getElementById('tl'); ul.innerHTML='';
+  document.getElementById('tlEmpty').style.display=anns.length?'none':'block';
+  sorted.forEach(a=>{
+    const li=document.createElement('li');
+    const kind=a.kind==='trip'?'Journey':(a.starred?'Landmark':'Place');
+    const col=a.color==='#ffffff'?'#8a9095':a.color;
+    const dt=a.kind==='trip'?[a.date,a.dateEnd].filter(Boolean).join(' – '):(a.date||'');
+    const dotCls=a.kind==='trip'?'dot line':'dot';
+    li.innerHTML='<div class="kind"><span class="'+dotCls+'" style="'+(a.kind==='trip'?'color:'+col:'background:'+col)+'"></span>'+kind+'</div>'
+      +'<div class="ttl">'+((a.kind==='place'&&!a.starred&&a._num)?'<span class="num">'+a._num+'. </span>':'')+escapeHtml(a.title||'(untitled)')+'</div>'
+      +(dt?'<div class="dt">'+escapeHtml(dt)+'</div>':'')
+      +'<div class="mini"><button title="edit">✎</button><button title="delete">🗑</button></div>';
+    li.querySelector('.kind').onclick=li.querySelector('.ttl').onclick=()=>flyTo(a);
+    const mb=li.querySelectorAll('.mini button');
+    mb[0].onclick=e=>{e.stopPropagation();openModal(a,false);};
+    mb[1].onclick=e=>{e.stopPropagation();removeAnn(a.id);};
+    ul.appendChild(li);
+  });
+}
+function flyTo(a){const l=layerById[a.id]; if(!l)return;
+  if(a.kind==='place')map.flyTo(l.getLatLng(),Math.max(map.getZoom(),9)); else map.flyToBounds(l.getBounds(),{padding:[60,60]});
+  setTimeout(()=>l.openPopup(),450);}
+
+/* ---- drawing ---- */
+map.pm.setGlobalOptions({snappable:true});
+let pendingKind=null,editing=false;
+function markBtns(){document.getElementById('addPlace').classList.toggle('on',pendingKind==='place');
+  document.getElementById('addTrip').classList.toggle('on',pendingKind==='trip');
+  document.getElementById('editMode').classList.toggle('on',editing);}
+function setDraw(kind){map.pm.disableDraw();pendingKind=kind;markBtns();
+  const tip=document.getElementById('drawtip');
+  if(kind==='place'){map.pm.enableDraw('Marker',{continueDrawing:false});tip.style.display='block';tip.textContent='Click the map to drop a marker';}
+  else if(kind==='trip'){map.pm.enableDraw('Line',{continueDrawing:false});tip.style.display='block';tip.textContent='Click along the route · double-click to finish';}
+  else tip.style.display='none';}
+function setEdit(on){editing=on; if(on){setDraw(null);map.pm.enableGlobalEditMode();map.pm.enableGlobalDragMode();}
+  else{map.pm.disableGlobalEditMode();map.pm.disableGlobalDragMode();} markBtns();}
+document.getElementById('addPlace').onclick=()=>setDraw(pendingKind==='place'?null:'place');
+document.getElementById('addTrip').onclick=()=>setDraw(pendingKind==='trip'?null:'trip');
+document.getElementById('stopDraw').onclick=()=>{setDraw(null);setEdit(false);};
+document.getElementById('editMode').onclick=()=>setEdit(!editing);
+map.on('pm:create',e=>{const kind=e.shape==='Marker'?'place':'trip';let coords;
+  if(kind==='place'){const ll=e.layer.getLatLng();coords=[ll.lat,ll.lng];} else coords=e.layer.getLatLngs().map(p=>[p.lat,p.lng]);
+  e.layer.remove(); setDraw(null);
+  openModal({id:nid(),kind,coords,title:'',date:'',dateEnd:'',notes:'',starred:false,color:kind==='trip'?'#e8820c':'#2ba3c4'},true);});
+
+/* ---- modal ---- */
+let modalAnn=null,modalIsNew=false,modalColor=COLORS[0];
+const modal=document.getElementById('modal');
+function buildSwatches(){const w=document.getElementById('swatches');w.innerHTML='';
+  COLORS.forEach(c=>{const d=document.createElement('div');d.className='sw'+(c===modalColor?' sel':'');
+    d.style.background=c;d.title=(c==='#ffffff'?'white / star':c);d.onclick=()=>{modalColor=c;buildSwatches();};w.appendChild(d);});}
+function openModal(a,isNew){modalAnn=a;modalIsNew=isNew;modalColor=a.color||COLORS[0];
+  document.getElementById('mTitle').textContent=(isNew?'Add ':'Edit ')+(a.kind==='trip'?'journey':'place');
+  document.getElementById('fTitle').value=a.title||'';document.getElementById('fDate').value=a.date||'';
+  document.getElementById('fDateEnd').value=a.dateEnd||'';document.getElementById('fNotes').value=a.notes||'';
+  document.getElementById('fDateLbl').textContent=a.kind==='trip'?'Start date':'Date';
+  document.getElementById('fDateEndWrap').style.display=a.kind==='trip'?'block':'none';
+  document.getElementById('starWrap').style.display=a.kind==='trip'?'none':'flex';
+  document.getElementById('fStar').checked=!!a.starred;
+  document.getElementById('mDelete').style.display=isNew?'none':'inline-flex';
+  buildSwatches();modal.style.display='flex';setTimeout(()=>document.getElementById('fTitle').focus(),30);}
+function closeModal(){modal.style.display='none';modalAnn=null;}
+document.getElementById('mCancel').onclick=closeModal;
+document.getElementById('mSave').onclick=()=>{const a=modalAnn;if(!a)return;
+  a.title=document.getElementById('fTitle').value.trim();a.date=document.getElementById('fDate').value.trim();
+  a.dateEnd=document.getElementById('fDateEnd').value.trim();a.notes=document.getElementById('fNotes').value.trim();
+  a.starred=a.kind==='place'&&document.getElementById('fStar').checked;a.color=modalColor;
+  if(modalIsNew)anns.push(a); renderAll();save();closeModal();};
+document.getElementById('mDelete').onclick=()=>{if(modalAnn)removeAnn(modalAnn.id);closeModal();};
+
+/* ---- persistence ---- */
+function toGeoJSON(){return {type:'FeatureCollection',features:anns.map(a=>({type:'Feature',
+  properties:{kind:a.kind,title:a.title,date:a.date,dateEnd:a.dateEnd,notes:a.notes,color:a.color,starred:!!a.starred},
+  geometry:a.kind==='place'?{type:'Point',coordinates:[a.coords[1],a.coords[0]]}:{type:'LineString',coordinates:a.coords.map(c=>[c[1],c[0]])}}))};}
+function fromGeoJSON(gj){const out=[];(gj.features||[]).forEach(f=>{const p=f.properties||{},g=f.geometry||{};
+  if(g.type==='Point')out.push({id:nid(),kind:'place',coords:[g.coordinates[1],g.coordinates[0]],title:p.title||p.name||'',date:p.date||'',dateEnd:p.dateEnd||'',notes:p.notes||'',starred:!!p.starred,color:p.color||'#2ba3c4'});
+  else if(g.type==='LineString')out.push({id:nid(),kind:'trip',coords:g.coordinates.map(c=>[c[1],c[0]]),title:p.title||'',date:p.date||'',dateEnd:p.dateEnd||'',notes:p.notes||'',color:p.color||'#e8820c'});});
+  return out;}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(toGeoJSON()));}catch(e){}}
+async function initData(){let raw=null;try{raw=localStorage.getItem(STORE_KEY);}catch(e){}
+  if(raw){try{anns=fromGeoJSON(JSON.parse(raw));}catch(e){anns=[];}}
+  if(!anns.length){try{const r=await fetch('montecristo-annotations.json',{cache:'no-store'});if(r.ok)anns=fromGeoJSON(await r.json());}catch(e){}}
+  renderAll();}
+document.getElementById('expBtn').onclick=()=>{const blob=new Blob([JSON.stringify(toGeoJSON(),null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='montecristo-annotations.json';a.click();URL.revokeObjectURL(u);};
+document.getElementById('impBtn').onclick=()=>document.getElementById('impFile').click();
+document.getElementById('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{try{anns=anns.concat(fromGeoJSON(JSON.parse(rd.result)));renderAll();save();}catch(err){alert('Could not read that file.');}};
+  rd.readAsText(f);e.target.value='';};
+document.getElementById('clearBtn').onclick=()=>{if(anns.length&&!confirm('Delete all '+anns.length+' annotations?'))return;anns=[];renderAll();save();};
+document.getElementById('demoBtn').onclick=()=>{anns=anns.concat(demoData());renderAll();save();zoomMed();};
+
+/* ---- quick views + hide panel ---- */
+function zoomMed(){map.flyTo([42.6,8.8],6);} function zoomBay(){map.flyTo([43.28,5.33],12);}
+document.getElementById('zoomMed').onclick=zoomMed; document.getElementById('zoomBay').onclick=zoomBay;
+document.getElementById('yearNav').onclick=e=>{e.preventDefault();zoomMed();};
+const side=document.getElementById('side'),showTab=document.getElementById('showTab');
+function setPanel(open){side.classList.toggle('collapsed',!open);showTab.style.display=open?'none':'block';setTimeout(()=>map.invalidateSize(),300);}
+document.getElementById('hideBtn').onclick=e=>{e.preventDefault();setPanel(false);};
+showTab.onclick=()=>setPanel(true);
+
+/* ---- demo ---- */
+function demoData(){return fromGeoJSON({type:'FeatureCollection',features:[
+  pt(10.330,42.812,'Elba (Porto-Ferrajo)','Feb 1815','The Pharaon calls; Napoleon\'s letter is entrusted to Dantès.','#7b6fd0',false),
+  pt(5.3698,43.2965,'Marseille','24 Feb 1815','The Pharaon reaches port; Dantès is denounced and arrested.','#2ba3c4',false),
+  pt(5.353,43.287,'The Catalans','1815','Mercédès\' village; Fernand\'s jealousy.','#f0a500',false),
+  pt(5.3256,43.2797,'Château d\'If','1815–1829','Fourteen years imprisoned; Abbé Faria and the secret of the treasure.','#c0392b',false),
+  pt(5.301,43.279,'Île de Tiboulen','1829','Dantès swims ashore after his escape — free at last.','#2b9d4a',false),
+  pt(10.317,42.333,'Isle of Monte Cristo','—','The promised treasure, still ahead.','#ffffff',true),
+  ln([[10.330,42.812],[5.9,43.1],[5.3698,43.2965]],'The Pharaon\'s voyage','Feb 1815','','#7b6fd0'),
+  ln([[5.3256,43.2797],[5.301,43.279]],'The escape swim','1829','','#2b9d4a')
+]});
+  function pt(lon,lat,t,d,n,c,s){return {type:'Feature',properties:{kind:'place',title:t,date:d,notes:n,color:c,starred:s},geometry:{type:'Point',coordinates:[lon,lat]}};}
+  function ln(cs,t,d,e,c){return {type:'Feature',properties:{kind:'trip',title:t,date:d,dateEnd:e,color:c},geometry:{type:'LineString',coordinates:cs}};}
+}
+
+initData();
+</script>
+</body>
+</html>
