@@ -1,41 +1,15 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+# macOS
 .DS_Store
-*.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# ingested data
-/app/data/
-/public/slides/
-/public/search-index.json
-
+# website-source/ is the Next.js project that builds the static site
+# published at the repo root. Its build artifacts aren't committed —
+# only the built output (copied to root) and the source code are.
+website-source/node_modules/
+website-source/.next/
+website-source/out/
+website-source/next-env.d.ts
+website-source/*.tsbuildinfo
+website-source/app/data/
+website-source/public/slides/
+website-source/public/search-index.json
+website-source/public/search-documents.json
