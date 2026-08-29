@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How I Built My Free Website</title>
+  <link href="../../CSS/articlestyle.css" rel="stylesheet" type="text/css" />
+
+  <!-- Prism.js for Syntax Highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="../../JS/script.js" defer></script>
+</head>
+
+<body>
+  <div class="homebutton-container">
+    <a href="../../index.html">
+      <img src="../../images/header2.jpeg" class="homebutton" alt="Home Button">
+    </a>
+  </div>
+
+  <!--BACK TO THE TOP BUTTON-->
+  <button id="backToTopBtn">BACK TO TOP</button>
+
+  <a href="codeoverview.html" class="back-link">Back to Coding:</a>
+
+  <h1>How I Built My Free Website</h1>
+
+  <p>Here’s a step-by-step guide on how I created my free website using GitHub Pages and Visual Studio Code (VS Code). Follow these instructions to build your own!</p>
+<!------------------------------------------------------------------------------------------------------------->
+  <h2>Step 1: Create a Folder for Your Website</h2>
+  <p>Start by creating a folder on your computer where you’ll store all the files for your website. For example, name it <code>my_blog</code>. This folder will hold your HTML, CSS, JavaScript, and any other assets needed for your site.</p>
+
+<!------------------------------------------------------------------------------------------------------------->
+<br>
+  <h2>Step 2: Download Visual Studio Code</h2>
+  <p>Download and install <a target="_blank" href="https://code.visualstudio.com/download">Visual Studio Code</a>, a free and user-friendly code editor. Once installed, open VS Code and attach your folder:</p>
+  <ul class="articlelists">
+    <li>Open VS Code.</li>
+    <li>Click <strong>File</strong> &gt; <strong>Open Folder</strong>.</li>
+    <li>Select your folder (e.g., <code>my_blog</code>).</li>
+  </ul>
+<!------------------------------------------------------------------------------------------------------------->
+<br>
+
+  <h2>Step 3: Download Git</h2>
+  <p>Before setting up your GitHub repository, make sure you have Git installed on your computer. Git is a version control system that helps you manage your code and collaborate with others.</p>
+  <a target="_blank" class="links" id="generallinks" href="https://git-scm.com/downloads">Download Git from the official website here! </a>
+  <ul class="articlelists">
+    <li>Follow the instructions for your operating system (Windows, macOS, or Linux).</li>
+    <li>After installation, open your terminal and verify the installation by running the following command:
+      <div class="code-container">
+        <pre><code>git --version</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+    </li>
+    <li>If you see the Git version displayed, you're ready to move on!</li>
+  </ul>
+<!------------------------------------------------------------------------------------------------------------->
+<br>
+
+  <h2>Step 4: Create a New GitHub Repository</h2>
+  <p> GitHub allows you to store and manage your code online, which is a lifesaver should you accidentally delete your code locally or mess up all your code trying to fix one bug. <br>
+   <br> GitHub is also essential for managing and hosting your website.</p>
+  <ul class="articlelists">
+    <li>Log in to your GitHub account.</li>
+    <li>Click the <strong>+</strong> button in the top-right corner and select <strong>New repository</strong>.</li>
+    <li>Fill in the details, like the repository name (e.g., <code>my_blog</code>), and choose <strong>Public</strong> so you can enable Github Pages for your website later.</li>
+    <li>Do not initialize the repository with a README, .gitignore, or license (to avoid conflicts).    </li>
+    <li>Click <strong>Create repository</strong> and copy the repository URL.</li>
+  </ul>
+<!------------------------------------------------------------------------------------------------------------->
+<br>
+
+  <h2>Step 5: Set Up Git Locally</h2>
+  <p>Use your terminal to link your local folder to the GitHub repository:</p>
+  <br>
+  <h4>Where is the terminal?</h4>
+  <p>It'll be towards the bottom of the VS code editor, next to "problems", "output", "debug console". </p>
+  <img class="generalpics" src="../../images/terminal.jpg " alt="picture of VS Code Editor with Terminal at the bottom">
+
+  <ul class="articlelists">
+    <li>Navigate to your folder in the terminal using the command:
+      <div class="code-container">
+        <pre><code>cd ~/Desktop/folder_name</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+      You can get the path to your folder by dragging your folder from the desktop and dropping it into the terminal window.
+    </li>
+    <li>Initialize Git in the folder:
+      <div class="code-container">
+        <pre><code>git init</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+    </li>
+    <li>Stage and commit your files:
+      <div class="code-container">
+        <pre><code>git add .</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+      
+      <div class="code-container">
+        <pre><code>git commit -m "Initial commit"</code></pre>
+        <button class="copy-button">Copy</button>
+        </div>
+    </li>
+    <li>Link the local repository to GitHub:
+      <div class="code-container">
+        <pre><code>git remote add origin https://github.com/your-username/repository_name.git</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+    </li>
+    <li>Push the code to GitHub:
+      <div class="code-container">
+        <pre><code>git push -u origin main</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+    </li>
+  </ul>
+<!------------------------------------------------------------------------------------------------------------->
+<br>
+
+  <h2>Step 6: Code Your Website</h2>
+  <p>Create the necessary files for your website:</p>
+  <ul class="articlelists">
+    <li><code>index.html</code>: Main structure of your site.</li>
+    <li><code>style.css</code>: Design and layout.</li>
+    <li>Optional: JavaScript files for interactivity.</li>
+  </ul>
+  <h3>Tip:</h3>
+  <p>Download the <strong>Live Server</strong> extension in VS Code so you can view your code changes in real time. This allows you to test and preview your website locally before pushing updates to GitHub. </p>
+  <ul class="articlelists">
+    <li>Go to the Extensions view in VS Code (click the square icon on the sidebar).</li>
+    <li>Search for "Live Server."</li>
+    <li>Click <strong>Install</strong> and follow the instructions to start a local server.</li>
+</ul>
+<p>
+For more detailed guidance, check out this article: <a target="_blank"  href="https://medium.com/@aleksej.gudkov/how-to-use-live-server-in-visual-studio-code-for-real-time-web-development-c1914a4e7f24">How to Use Live Server in Visual Studio Code</a>. 
+</p>
+
+<!------------------------------------------------------------------------------------------------------------->
+<br>
+
+  <h2>Step 7: Push Updates Regularly</h2>
+  <p>As you code, remember to push the changes to GitHub to update your website:</p>
+  <ul class="articlelists">
+    <li>Stage all changes:
+      <div class="code-container">
+        <pre><code>git add *</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+    </li>
+    <li>Commit with a message:
+      <div class="code-container">
+        <pre><code>git commit -m "Update message here"</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+    </li>
+    <li>Push to GitHub:
+      <div class="code-container">
+        <pre><code>git push</code></pre>
+        <button class="copy-button">Copy</button>
+      </div>
+    </li>
+  </ul>
+<!------------------------------------------------------------------------------------------------------------->
+<br>
+
+  <h2>Step 8: Publish with GitHub Pages</h2>
+  <p>Host your website for free using GitHub Pages:</p>
+  <ul class="articlelists">
+    <li>Go to your repository’s <strong>Settings</strong>.</li>
+    <li>Under <strong>Pages</strong>, select the branch to deploy (e.g., <code>main</code>).</li>
+    <li>Click <strong>Save</strong>. GitHub will generate a live link to your site.</li>
+  </ul>
+  <p>Your site will be live at <em>https://username.github.io/repository_name</em>.</p>
+
+  <p>Happy coding!</p>
+  <br><br>
+</body>
+
+</html>

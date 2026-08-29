@@ -1,0 +1,602 @@
+body {
+  background-image: url('../images/paperbackground.jpeg');
+  background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  overflow-y: auto; /* Enables vertical scrolling if content exceeds screen height */
+   
+  }
+  
+/* Home Button Container */
+.homebutton-container { 
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  margin-top: 20px; /* Space from the top */
+}
+
+/* Home Button Styling */
+.homebutton {
+  width: 100px; 
+  height: auto; /* Maintains aspect ratio */
+  cursor: pointer;
+}
+
+
+/*FONTS******************************************************************/
+@font-face {
+  font-family: 'oliver';
+  src: url('fonts/Oliver-Regular.woff2') format('woff2'),
+      url('fonts/Oliver-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'karla';
+  src: url('fonts/Karla-Regular.woff2') format('woff2'),
+      url('fonts/Karla-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'poppins';
+  src: url('fonts/Poppins-Regular.woff2') format('woff2'),
+      url('fonts/Poppins-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+@font-face {
+  font-family: 'geologica';
+  src: url('fonts/Geologica-Regular.woff2') format('woff2'),
+      url('fonts/Geologica-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'winkle';
+  src: url('fonts/Winkle-Regular.woff2') format('woff2'),
+      url('fonts/Winkle-Regular.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'laundry gothic';
+  src: url('fonts/TTLaundryGothicR.woff2') format('woff2'),
+      url('fonts/TTLaundryGothicR.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'laundry gothic bold';
+  src: url('fonts/TTLaundryGothicB.woff2') format('woff2'),
+      url('fonts/TTLaundryGothicB.woff2') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'nanum square';
+  src: url('fonts/NanumSquareNeoTTF-bRg.woff2') format('woff2'),
+      url('fonts/NanumSquareNeoTTF-bRg.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/*********************************************************************************/
+
+h1{
+  font-family: 'oliver', 'winkle', 'annis handwriting', cursive;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  font-weight: 500;
+}
+
+h2{
+  padding-left: 70px;
+  font-family: 'oliver', 'laundry gothic', 'winkle', 'annis handwriting', cursive;
+  line-height: 1.0;
+  font-weight: 400;
+}
+
+h3{
+  padding-left: 70px;
+  font-family: 'oliver', 'laundry gothic', 'winkle', 'annis handwriting', cursive;
+  line-height: 1.0;
+  font-weight: 100;
+
+}
+
+h4{
+  padding-left: 70px;
+  font-family: 'oliver', 'laundry gothic', 'winkle', 'annis handwriting', cursive;
+  line-height: 1.0;
+}
+
+p{
+  padding-left: 70px;
+  padding-right: 70px;
+  font-family: 'poppins', 'karla', 'nanum square', cursive;
+  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+p.strong{
+  font-weight: 100;
+}
+
+pre{
+  padding-left: 70px;
+  font-family: 'poppins', 'karla', 'nanum square', 'laundry gothic', 'annis handwriting', cursive;
+  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+li{
+  font-family: 'poppins', 'karla', 'oliver', 'laundry gothic', 'annis handwriting', cursive;
+  line-height: 2.5;
+  list-style-type: none;
+}
+
+.articlelists{
+  margin-left: 70px;
+}
+
+/* unvisited link */
+a:link {
+  color: rgb(36, 130, 50);
+}
+
+/* visited link */
+a:visited {
+  color: rgb(43, 168, 74);
+}
+
+/* mouse over link */
+a:hover {
+  color: rgb(206, 160, 174);
+}
+
+.romanization{
+  padding-left: 70px;
+  font-family: 'oliver', 'laundry gothic', 'annis handwriting', cursive;
+  text-align: left;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.links{
+  font-family: 'poppins', 'karla', 'oliver', 'laundry gothic', 'annis handwriting', cursive;
+  text-align: left;  
+}
+
+#generallinks{
+  margin-left: 70px;
+}
+
+.sources{
+  font-family: 'poppins', 'karla', 'oliver', 'laundry gothic', 'annis handwriting', cursive;
+  margin-left: 70px;
+}
+
+.links a:hover{
+  font-family: 'oliver', 'laundry gothic', 'annis handwriting', cursive;
+  text-align: left;  
+  cursor: pointer;
+}
+
+#disclaimer{
+  font-family: 'oliver', 'laundry gothic', 'annis handwriting', cursive;
+  font-size: 0.9rem;
+}
+
+/*ARTICLE LIST STYLING**************************************************/
+.articlelist {
+  justify-content: center;
+  list-style-type: none; /* Removes bullets */
+  padding: 0;
+  margin: 0 auto; /* Center the list */
+  text-align: center; /* Center-align the text */
+  font-family: 'oliver', 'laundry gothic', 'winkle', cursive;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.articlelist a {
+  text-decoration: none; 
+  color: rgb(39, 38, 38); 
+}
+
+.articlelist a:hover {
+  color: #45a95f; 
+  text-decoration: underline; 
+  cursor: pointer;
+  transition: width 0.3s ease;
+}
+
+
+/*BACK LINK STYLING**************************************************/
+.back-link {
+  text-decoration: none; 
+  color: black; 
+  font-size: 1.4rem; 
+  position: relative; /* Required for the ::after pseudo-element */
+  transition: color 0.3s ease; 
+  margin-left: 70px;
+  font-family: 'oliver', 'laundry gothic', 'winkle', cursive;
+}
+
+/* Hover effect for the link */
+.back-link:hover {
+  color: rgb(43, 168, 74); /* Darken the color on hover */
+  color: rgb(206, 160, 174); 
+  text-decoration: underline; 
+  cursor: pointer;
+  transition: width 0.3s ease;
+}
+
+
+/*ANCHOR LINKS STYLING***************************************************************************/
+/* ANCHOR LINKS CONTAINER */
+.anchorlinks {
+  display: flex; /* Align items side-by-side */
+  flex-wrap: wrap; /* Ensure it wraps to the next row if the screen size is small */
+  gap: 0; /* Add spacing between the columns */
+  line-height: 0;
+  justify-content: space-around; /* Ensures equal spacing around columns */
+  margin-right: 70px;
+}
+
+/* COLUMNS STYLING ***********************************************/
+.anchorcolumn {
+  flex: 1 1 170px; /* Each column takes up a minimum of 170px and grows to fill available space */
+  text-align: center;
+  width: 100%;
+}
+
+.anchorcolumn h4 {
+  font-family: 'oliver';
+  color: rgb(107, 107, 161);
+  font-size: 1.2rem;
+  margin-bottom: 2px;
+  text-align: center;
+  padding: 0 0;
+}
+
+.anchorlinks ul {
+  list-style-type: none; 
+  padding: 0; 
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.anchorlinks li {
+  margin-bottom: 0rem; /* Space between each link */
+  margin-left: 0;
+  line-height: 1.8;
+  text-align: center;
+  width: 100%;
+}
+
+
+.anchorlinks a {
+  font-family: 'oliver';
+  font-size: 1.1rem;
+  color: black;
+  text-decoration: none;
+  border-bottom: 0.1rem solid transparent;
+  transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+  padding-bottom: 0px;
+}
+
+.anchorlinks a:hover {
+  color: rgb(140, 140, 198);
+  border-bottom-color: rgb(140, 140, 198);
+  cursor: pointer;
+}
+
+
+/*back to top button***********************************************/
+
+#backToTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  z-index: 1;
+  background-color: rgb(245, 183, 0);
+  color: rgb(62, 53, 53);
+  border: 2px solid rgb(62, 53, 53); 
+  padding: 0.8% 0.8%;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 16px;
+  font-family: 'oliver', 'karla', 'poppin', serif;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/*arrow animation */
+
+#backToTopBtn::before {
+  content: '\2191'; /* Unicode character for an arrow pointing up */
+  display: inline-block;
+  font-size: 17px; /*making the arrow bigger*/
+  margin-right: 8px; /* Adjust spacing between text and arrow */
+  transition: transform 0.4s ease-in-out;
+}
+
+#backToTopBtn:hover::before {
+  transform: translateY(-4px); /* Move the arrow up a bit on hover */
+}
+
+/*CODE STYLING *********************************************/
+.code-container {
+  position: relative; /* For positioning the Copy button */
+  margin: 1em 0; /* Add vertical spacing */
+  margin-left: 70px;
+  margin-right: 70px;
+}
+
+/* Styling for <pre> blocks */
+pre {
+  background-color: #f4f4f4; /* Light gray background */
+  padding: 15px; /* Add padding inside the code block */
+  border: 1px solid #ddd; /* Subtle border */
+  border-radius: 5px; /* Rounded corners */
+  overflow-x: auto; /* Enable horizontal scrolling for long lines */
+  font-family: "Courier New", Courier, monospace; /* Monospace font */
+  font-size: 0.9rem; /* Slightly smaller font size */
+  white-space: pre-wrap; /* Wrap long lines */
+  line-height: 1.5; /* Improve readability */
+  margin: 0; /* Remove default margin */
+}
+
+.copy-button {
+  position: absolute; /* Positioned relative to the container */
+  font-family: 'poppins', 'karla', serif;
+  top: 10px; /* Place at the top-right corner */
+  right: 10px;
+  background-color: rgb(245, 183, 0); 
+  color: black; 
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0.8; /* Slightly transparent */
+  transition: opacity 0.2s;
+}
+
+/* Hover effect for the Copy button */
+.copy-button:hover {
+  opacity: 1; /* Fully opaque on hover */
+}
+
+/* LDR APPS PICS styling********************************************/
+.LdrAppPics{
+  margin-left: 70px;
+  max-width: 20%;
+  height: auto;
+  display: block;
+}
+
+.generalpics{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 70%;
+}
+
+.EatingHealthyInDorms{
+  margin-left: 70px;
+  max-width: 40%;
+  height: auto;
+  display: in-line block;
+}
+
+.appspictures{
+  max-width: 60px;
+  height: auto;
+}
+
+/* HORIZONTAL CONTAINER STACKING STYLING ********************************/
+/* Flex container for side-by-side layout */
+.main-container {
+  display: flex;              /* Enables side-by-side layout */
+  justify-content: space-between; /* Adds space between the two containers */
+  margin-top: 40px;
+  padding: 20px;
+}
+
+/* Left side (text content) */
+.text-container {
+  width: 70%;                 /* Takes 70% of the container width */
+}
+
+/* Right side (images) */
+.image-container {
+  width: 30%;                 /* Takes 30% of the container width */
+  display: flex;
+  flex-direction: column;     /* Stacks images vertically */
+  gap: 150px;                  /* Adds space between images */
+  align-items: center;        
+}
+
+.image-example {
+  max-width: 100%;
+  height: auto;            
+}
+
+/*********************************************************************************************************************/
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;  /* Stacks the text and images vertically */
+  }
+  .text-container,
+  .image-container {
+    width: 80%; 
+  }
+
+    #MufflerImage{
+      transform: rotate(-20deg);
+    }
+
+    #OnePieceImage{
+      transform: rotate(15deg);
+    }
+
+    #WaterMeatImage{
+      transform: rotate(20deg);
+    }
+
+    #WindSmokeImage{
+      margin-left: -60%;
+    }
+
+    h1{
+      font-weight: 700;
+    }
+
+    h2{
+      font-weight: 700;
+    }
+
+    h2{
+      font-weight: 700;
+    }
+}
+
+/* For smart phones ******************************************************************************/
+@media (max-width: 600px) {
+
+  .homebutton {
+    width: 60px;  /* Smaller width for mobile */
+  }
+
+  .main-container {
+    flex-direction: column;
+  }
+  
+  p,
+  h2,
+  h4,
+  pre,
+  li,
+  .romanization,
+  .articlelists {
+    padding-left: 20px;  /* Reduce padding for small screens */
+    padding-right: 20px; /* Keep some breathing space */
+  }
+
+  h1{
+    font-weight: 600;
+  }
+
+  h2{
+    font-weight: 600;
+  }
+
+  .anchorsection{
+      margin-right: 20px;
+      margin-left: 20px;
+    }
+
+
+  .text-container,
+  .image-container {
+    width: 80%;  /* Full width on mobile */
+  }
+  
+  .image-example {
+    max-width: 100%;  /* Smaller images */
+  }
+
+  .generalpics{
+    width: 50%;
+  }
+
+  .EatingHealthyInDorms{
+    margin-left: 70px;
+    max-width: 40%;
+    height: auto;
+    display: in-line block;
+  }
+
+  .back-link {
+    margin-left: 20px;
+    line-height: 0;
+    font-size: 0.8rem;
+  }
+
+  .image-example{
+    display: none;
+  }
+
+  .code-container {
+    position: relative; /* For positioning the Copy button */
+    margin: 1em 0; /* Add vertical spacing */
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+
+}
+
+/* For tablets *******************************************************************************************/
+@media screen and (min-width: 600px) and (max-width: 900px) {
+
+  .main-container {
+    flex-direction: row;
+  }
+  .text-container {
+    width: 60%;
+  }
+  .image-container {
+    width: 40%;
+  }
+  .image-example {
+    max-width: 60%;
+  }
+
+  .anchorlinks{
+    padding-right: 10px;
+  }
+
+}
+
+/* For desktop computers *********************************************************************/
+@media screen and (min-width: 900px) {
+  .main-container {
+    gap: 40px;
+  }
+  .homebutton {
+    width: 120px;
+  }
+  .text-container {
+    width: 70%;
+  }
+  .image-container {
+    width: 30%;
+  }
+}

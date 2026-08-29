@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../Downloads/oliver_3"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "nuff_blog"
+	}
+}
